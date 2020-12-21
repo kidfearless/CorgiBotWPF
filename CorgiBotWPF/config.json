@@ -1,0 +1,5 @@
+{
+	"channel": "general",
+	"message": "Welcome to the server, %1!\nIf you have any questions about the timer not loading, please make sure SourceMod 1.10 or above is installed!\nDownload link: %2.\n\nBefore asking any questions please go through the <#731589862586712216> channel.\n\n",
+	"token": "your token here."
+}
