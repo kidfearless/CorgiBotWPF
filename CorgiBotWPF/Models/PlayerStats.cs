@@ -23,7 +23,16 @@ namespace CorgiBotWPF.Models
 			}
 			set
 			{
-				base[index] = value;
+				// safety check
+				if(value == uint.MaxValue)
+				{
+					base[index] = 0;
+				}
+				else
+				{
+					base[index] = value;
+
+				}
 				Save();
 			}
 		}

@@ -48,7 +48,7 @@ namespace CorgiBotWPF
 
 		public DiscordEmoji CorgiEmoji => DiscordEmoji.FromName(Client, ":corgi:");
 		public DiscordEmoji CorgiButtEmoji => DiscordEmoji.FromName(Client, ":corgibutt:");
-		public DiscordEmoji BatEmoji => DiscordEmoji.FromName(Client, ":bat:");
+		public DiscordEmoji BatEmoji => DiscordEmoji.FromUnicode(Client, "\uD83E\uDD87");
 
 		private void InitPath()
 		{
@@ -104,6 +104,7 @@ namespace CorgiBotWPF
 		// Entry Point for our application
 		protected override async void OnStartup(StartupEventArgs e)
 		{
+			
 			try
 			{
 				InitPath();
@@ -177,6 +178,7 @@ namespace CorgiBotWPF
 
 		private Task Client_MessageCreated(MessageCreateEventArgs e)
 		{
+
 			try
 			{
 				if(e.Guild is null)
@@ -199,10 +201,10 @@ namespace CorgiBotWPF
 				else if (e.Channel == Channel && e.Author is not null && !e.Author.IsBot)
 				{
 					bool gaveCorgi = false;
-					if(new Random().Next(0, 50) == 40)
-					{
-						GiveFakeBat(e);
-					}
+					//if(new Random().Next(0, 50) == 40)
+					//{
+					//	GiveFakeBat(e);
+					//}
 					if (new Random().Next(0, 100) == 50)
 					{
 						GiveCorgi(e);
@@ -221,7 +223,7 @@ namespace CorgiBotWPF
 						}
 						else
 						{
-							e.Channel.SendMessageAsync("No, go ask SlidyBot.");
+							e.Channel.SendMessageAsync("No, go ask SlidyBot.\n You now have 0 corgis...");
 						}
 					}
 				}
@@ -273,7 +275,7 @@ namespace CorgiBotWPF
 								.OrderByDescending(k => k.Value)
 								// returns a collection of formatted strings
 								.Select(kv => $"**•** <@{kv.Key}> -{kv.Value} {CorgiEmoji}")
-								.Take(25);
+								.Take(15);
 
 			string statsString = string.Join("\n", sortedStats);
 
@@ -282,18 +284,22 @@ namespace CorgiBotWPF
 				statsString = "**•** N/A";
 			}
 
-			builder.AddField("Top 25 users reacted to:", statsString);
+			builder.AddField("Top 15 users reacted to:", statsString);
 			channel.SendMessageAsync(embed: builder);
 		}
 
 		// Called when we have connected to our discord and can start sending messages.
 		// This will create our repeating timer at a safe point.
-		private Task Client_GuildAvailable(GuildCreateEventArgs e)
+		private async Task Client_GuildAvailable(GuildCreateEventArgs e)
 		{
-			Channel = e.Guild.Channels.First(chan => chan.Name.ToLower() == Config.Channel);
+			if(e.Guild.Name == "bhoptimer")
+			{
+				Channel = e.Guild.Channels.First(chan => chan.Name.ToLower() == Config.Channel);
+			}
+
+			(await Channel.GetMessagesAsync()).First();
 
 
-			return Task.CompletedTask;
 		}
 
 		public void Dispose()
